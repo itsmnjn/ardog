@@ -41,6 +41,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+html, body {
+  background-color: #000512;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

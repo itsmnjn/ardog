@@ -44,15 +44,19 @@ function App() {
   }
 
   return (
-    <div className="min-h-[100dvh] text-foreground flex flex-col items-center relative">
+    <div
+      className="min-h-[100dvh] text-foreground flex flex-col items-center relative"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+      }}
+    >
       <div
-        className="absolute inset-0 w-full h-full"
+        className="absolute w-full h-full"
         style={{
           backgroundImage: "url(/earth.jpeg)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          zIndex: -1,
         }}
         role="img"
         aria-label="Earth background"
