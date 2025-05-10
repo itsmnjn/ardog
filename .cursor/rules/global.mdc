@@ -1,0 +1,82 @@
+---
+description: Project guidelines for ARDog, a React-based web application for AR dog interactions, covering tech stack, project structure, and coding standards.
+globs:
+alwaysApply: true
+---
+
+# ARDog Project Guidelines
+
+## Project Overview
+ARDog is a web application built with Vite and React that allows users to interact with dogs in augmented reality (AR). Users can switch between different dog models and customize them with various items. The application is deployed on Cloudflare Pages.
+
+## Tech Stack
+- **Frontend Framework**: React 19
+- **Build Tool**: Vite 6
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui (with Radix UI primitives)
+- **Icons**: Lucide React
+- **Deployment**: Cloudflare Pages/Workers
+- **Language**: TypeScript
+
+## Project Structure
+- `src/`: Main application code
+- `worker/`: Cloudflare Workers code (main entry: index.ts)
+- Path aliases: Use `@/` to refer to the src directory
+
+## Coding Standards
+
+### Component Structure
+- Use functional components with React hooks
+- Follow shadcn/ui component patterns for consistency
+- Organize components with clear separation of concerns
+
+### TypeScript
+- Use proper type definitions for all components, props, and functions
+- Avoid using `any` type when possible
+- Leverage TypeScript's utility types when appropriate
+
+### Styling
+- Use Tailwind CSS for styling
+- Use `clsx` and `tailwind-merge` for conditional class names
+- Follow the class-variance-authority (cva) pattern for component variants
+- Example: `className={cn(styles.base, someCondition && styles.active)}`
+
+### AR Implementation
+- Handle AR-specific functionality in dedicated modules/hooks
+- Implement proper device compatibility checks
+- Consider performance optimizations for mobile devices
+
+### State Management
+- Use React's built-in state management (useState, useContext) for simple state
+- For complex state, consider more structured approaches
+- Ensure AR state changes are handled efficiently
+
+### Asset Management
+- 3D models should be optimized for web performance
+- Dog models and items should be organized logically
+- Consider lazy loading for non-essential assets
+
+### Deployment
+- The application is deployed using Cloudflare Pages and Workers
+- Build command: `pnpm run build`
+- Deploy command: `pnpm run deploy`
+
+### Development Workflow
+- Development server: `pnpm dev`
+- Build: `pnpm build`
+- Linting: `pnpm lint`
+- Preview production build: `pnpm preview`
+
+## Performance Considerations
+- Optimize 3D model loading and rendering
+- Implement proper lazy loading strategies
+- Consider mobile device limitations
+- Ensure smooth AR interactions
+
+## Best Practices
+- Follow React best practices
+- Write reusable components
+- Implement proper error handling for AR features
+- Ensure accessibility standards are met
+- Test on various devices and browsers
+- Consider fallbacks for devices without AR capabilities 
