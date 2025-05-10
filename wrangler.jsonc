@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "my-react-app",
+	"name": "ardog",
 	"main": "worker/index.ts",
 	"compatibility_date": "2025-05-10",
 	"assets": {
