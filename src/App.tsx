@@ -14,8 +14,8 @@ interface StyledDrawerContentProps {
 const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, children }) => {
   return (
     <Drawer.Portal>
-      <Drawer.Overlay className="fixed inset-0 backdrop-blur-sm" />
-      <Drawer.Content className="bg-white/10 text-white backdrop-blur-lg flex flex-col rounded-t-[10px] h-[90%] mt-24 fixed bottom-0 left-0 right-0 outline-none">
+      <Drawer.Overlay className="fixed inset-0 bg-black/20 backdrop-blur-sm" />
+      <Drawer.Content className="bg-black/50 text-white backdrop-blur-lg flex flex-col rounded-t-[10px] h-[90%] mt-24 fixed bottom-0 left-0 right-0 outline-none">
         <div className="p-4 bg-transparent rounded-t-[10px] flex-1 overflow-y-auto">
           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-4" />
           <div className="max-w-md mx-auto">
