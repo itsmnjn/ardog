@@ -14,7 +14,7 @@ interface StyledDrawerContentProps {
 const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, children }) => {
   return (
     <Drawer.Portal>
-      <Drawer.Overlay className="fixed inset-0" />
+      <Drawer.Overlay className="fixed inset-0 backdrop-blur-sm" />
       <Drawer.Content className="bg-white/10 text-white backdrop-blur-lg flex flex-col rounded-t-[10px] h-[90%] mt-24 fixed bottom-0 left-0 right-0 outline-none">
         <div className="p-4 bg-transparent rounded-t-[10px] flex-1 overflow-y-auto">
           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-4" />
@@ -44,7 +44,33 @@ function App() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#111111] text-foreground flex flex-col items-center relative">
+    <div className="min-h-[100dvh] text-foreground flex flex-col items-center relative">
+      <div
+        className="absolute inset-0 w-full h-full"
+        style={{
+          backgroundImage: "url(/earth.jpeg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          zIndex: -1,
+        }}
+        role="img"
+        aria-label="Earth background"
+      >
+        <link
+          rel="preload"
+          as="image"
+          href="/earth.jpeg"
+          fetchPriority="high"
+        />
+        <img
+          src="/earth.jpeg"
+          alt=""
+          className="hidden"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
       {/* model-viewer component - now takes full width and height */}
       <model-viewer
         ref={modelViewerRef} // Assign ref
@@ -63,7 +89,6 @@ function App() {
           top: 0,
           left: 0,
           zIndex: 0, // Ensure it's behind other content
-          background: "#111111",
         }}
       >
         {/* Slot to hide the default AR button */}
@@ -74,8 +99,8 @@ function App() {
       <div className={`w-full ${MAX_WIDTH} flex flex-col flex-grow relative pointer-events-none`}>
         {/* Header */}
         <header className="absolute top-0 left-0 right-0 p-2 sm:p-4 pointer-events-auto">
-          <div className="flex flex-row p-2 rounded-lg bg-background justify-center">
-            <h1 className="text-3xl font-bold text-center text-primary">$ARDOG</h1>
+          <div className="flex flex-row p-2 justify-center">
+            <h1 className="text-3xl font-medium text-center text-white">$ARDOG</h1>
           </div>
         </header>
 
@@ -112,17 +137,11 @@ function App() {
                 </button>
               </Drawer.Trigger>
               <StyledDrawerContent title="Choose Your Items">
-                {/* Grid for item thumbnails */}
-                <div className="grid grid-cols-3 gap-4 p-4">
-                  {Array.from({ length: 9 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className={`aspect-square rounded-lg flex items-center justify-center bg-muted/50 border border-border/50`} // Added some transparency to items as well
-                      style={{ backgroundColor: `hsl(${index * 40}, 70%, 80%, 0.5)` }} // Mock colors with alpha
-                    >
-                      <span className="text-xs text-white">Item {index + 1}</span>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center justify-center p-8 text-center">
+                  <h3 className="text-2xl font-semibold mb-4">Coming Soon</h3>
+                  <p className="text-gray-300">
+                    New items and customizations will be available shortly. Stay tuned!
+                  </p>
                 </div>
               </StyledDrawerContent>
             </Drawer.Root>
@@ -161,10 +180,10 @@ function App() {
 
                   <p className="mt-4">
                     Visit{" "}
-                    <a href="https://thedogiseverywhere.com/" className="text-blue-300 hover:underline">
+                    <a href="https://thedogiseverywhere.com/" className="text-sky-400 hover:underline">
                       thedogiseverywhere.com
                     </a>{" "}
-                    for more information and to experience $ARDOG in AR.
+                    for more information.
                   </p>
                 </div>
               </StyledDrawerContent>
