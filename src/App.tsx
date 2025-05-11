@@ -1,7 +1,8 @@
-import { Info, Rocket, ShoppingBag } from "lucide-react" // Using ShoppingBag, Info, and Rocket icons
+import { Check, Copy, Info, Rocket, ShoppingBag } from "lucide-react" // Add Copy and Check icons
 import { Drawer } from "vaul"
 import "@google/model-viewer" // Import to register the custom element
-import { useRef } from "react" // Import useRef
+import { CONTRACT_ADDRESS, DEXSCREENER_LINK, X_COMMUNITY_LINK } from "@/lib/constants"
+import { useRef, useState } from "react" // Import useRef and useState
 
 const MAX_WIDTH = "max-w-xl" // Configurable max width
 
@@ -15,7 +16,7 @@ const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, childr
   return (
     <Drawer.Portal>
       <Drawer.Overlay className="fixed inset-0 bg-black/20 backdrop-blur-sm" />
-      <Drawer.Content className="bg-black/50 text-white backdrop-blur-lg flex flex-col rounded-t-[10px] h-[90%] mt-24 fixed bottom-0 left-0 right-0 outline-none">
+      <Drawer.Content className="bg-black/50 border border-white/20 text-white backdrop-blur-lg flex flex-col rounded-t-[10px] h-[90%] mt-24 fixed bottom-0 left-0 right-0 outline-none">
         <div className="p-4 bg-transparent rounded-t-[10px] flex-1 overflow-y-auto">
           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-4" />
           <div className="max-w-md mx-auto">
@@ -32,6 +33,7 @@ const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, childr
 
 function App() {
   const modelViewerRef = useRef<any>(null) // Add ref for model-viewer
+  const [copied, setCopied] = useState(false) // Add state for copy feedback
 
   const handleArActivate = () => {
     if (modelViewerRef.current) {
@@ -41,6 +43,12 @@ function App() {
         alert("AR is not supported on this device or browser. Please use Safari or Chrome on an iOS or Android device.")
       }
     }
+  }
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(CONTRACT_ADDRESS)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   return (
@@ -103,8 +111,22 @@ function App() {
       <div className={`w-full ${MAX_WIDTH} flex flex-col flex-grow relative pointer-events-none`}>
         {/* Header */}
         <header className="absolute top-0 left-0 right-0 p-2 sm:p-4 pointer-events-auto">
-          <div className="flex flex-row p-2 justify-center">
-            <h1 className="text-3xl font-medium text-center text-white">$ARDOG</h1>
+          <div className="flex flex-row p-2 justify-between items-center">
+            <a
+              href={DEXSCREENER_LINK}
+              target="_blank"
+              className="cursor-pointer"
+            >
+              <img src="/dex-logo.svg" alt="Dexscreener" className="w-[32px] h-[32px]" />
+            </a>
+            <img src="/ar.dog.svg" alt="AR.DOG" className="w-auto h-[36px]" />
+            <a
+              href={X_COMMUNITY_LINK}
+              target="_blank"
+              className="cursor-pointer justify-center items-center flex w-[32px] aspect-square"
+            >
+              <img src="/x-logo.svg" alt="X" className="w-6 h-6" />
+            </a>
           </div>
         </header>
 
@@ -160,35 +182,47 @@ function App() {
               </Drawer.Trigger>
               <StyledDrawerContent title="About $ARDOG">
                 <div className="prose prose-sm dark:prose-invert mx-auto">
-                  <p className="text-sm">
-                    $ARDOG is a community-owned memecoin with an innovative AR (Augmented Reality) component that lets
-                    users see a virtual dog in their real environment.
+                  <p className="text-base leading-relaxed mb-6">
+                    Originally launched by a short-sighted dev looking to make a quick buck, $ARDOG was abandoned within
+                    an hour. But legends don't die that easily. The next day, a few passionate holders stepped up to
+                    revive the project by launching this website and building a new community on X.
+                  </p>
+                  <p className="text-base leading-relaxed mb-8">
+                    Today, $ARDOG is 100% community-owned, unstoppable, and more memeable than ever!
                   </p>
 
-                  <h3 className="mt-4 text-base font-bold">Key Features:</h3>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>
-                      Augmented Reality Experience: Point your phone at a QR code to bring the AR dog into your world
-                    </li>
-                    <li>100% Community-Owned: Fully controlled by holders, not developers</li>
-                    <li>0% Tax: No buy/sell taxes</li>
-                    <li>100% Liquidity Burnt: Ensuring a fully decentralized token</li>
-                  </ul>
+                  <div>
+                    <h3 className="text-lg font-bold mb-2">🔗 THE CONTRACT THAT LETS THE DOG OUT</h3>
 
-                  <p className="mt-4">
-                    Contract Address:{" "}
-                    <code className="bg-black p-1 rounded text-xs">
-                      85YgaPBNug3zUNLgXn2PLR4WXywjarELBCiQLswYpump
-                    </code>
-                  </p>
+                    <div
+                      onClick={handleCopy}
+                      className="bg-black/50 p-2 rounded items-center gap-2 cursor-pointer group hover:bg-black/60 transition-colors inline-flex"
+                    >
+                      <code className="text-[11px] sm:text-xs">
+                        {CONTRACT_ADDRESS}
+                      </code>
+                      {copied
+                        ? <Check size={16} className="text-green-500 flex-shrink-0" />
+                        : <Copy size={16} className="text-gray-400 group-hover:text-white flex-shrink-0" />}
+                    </div>
+                  </div>
 
-                  <p className="mt-4">
-                    Visit{" "}
-                    <a href="https://thedogiseverywhere.com/" className="text-sky-400 hover:underline">
-                      thedogiseverywhere.com
-                    </a>{" "}
-                    for more information.
-                  </p>
+                  <div className="flex justify-center gap-4 mt-8">
+                    <a
+                      href={DEXSCREENER_LINK}
+                      target="_blank"
+                      className="cursor-pointer"
+                    >
+                      <img src="/dex-logo.svg" alt="Dexscreener" className="w-[32px] h-[32px]" />
+                    </a>
+                    <a
+                      href={X_COMMUNITY_LINK}
+                      target="_blank"
+                      className="cursor-pointer justify-center items-center flex w-[32px] aspect-square"
+                    >
+                      <img src="/x-logo.svg" alt="X" className="w-6 h-6" />
+                    </a>
+                  </div>
                 </div>
               </StyledDrawerContent>
             </Drawer.Root>
