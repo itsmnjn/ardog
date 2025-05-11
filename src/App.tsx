@@ -43,7 +43,7 @@ const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, childr
 function App() {
   const modelViewerRef = useRef<any>(null) // Add ref for model-viewer
   const [copied, setCopied] = useState(false) // Add state for copy feedback
-  const [models, setModels] = useState<Model[]>(modelsData) // Initialize models state with imported data
+  const [models] = useState<Model[]>(modelsData) // Initialize models state with imported data
   const [selectedModel, setSelectedModel] = useState<Model | null>(modelsData.length > 0 ? modelsData[0] : null) // Initialize selectedModel
 
   const handleArActivate = () => {
