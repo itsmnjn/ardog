@@ -2,9 +2,18 @@ import { Check, Copy, Info, Rocket, ShoppingBag } from "lucide-react" // Add Cop
 import { Drawer } from "vaul"
 import "@google/model-viewer" // Import to register the custom element
 import { CONTRACT_ADDRESS, DEXSCREENER_LINK, X_COMMUNITY_LINK } from "@/lib/constants"
-import { useRef, useState } from "react" // Import useRef and useState
+import modelsData from "@/models.json" // Import models.json directly
+import { useRef, useState } from "react" // Import useRef, useState, and useEffect
 
 const MAX_WIDTH = "max-w-xl" // Configurable max width
+
+// Define the type for our model data
+interface Model {
+  name: string
+  glb: string
+  usdz: string
+  thumbnail: string
+}
 
 // New StyledDrawerContent component
 interface StyledDrawerContentProps {
@@ -34,6 +43,8 @@ const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, childr
 function App() {
   const modelViewerRef = useRef<any>(null) // Add ref for model-viewer
   const [copied, setCopied] = useState(false) // Add state for copy feedback
+  const [models, setModels] = useState<Model[]>(modelsData) // Initialize models state with imported data
+  const [selectedModel, setSelectedModel] = useState<Model | null>(modelsData.length > 0 ? modelsData[0] : null) // Initialize selectedModel
 
   const handleArActivate = () => {
     if (modelViewerRef.current) {
@@ -86,9 +97,9 @@ function App() {
       {/* model-viewer component - now takes full width and height */}
       <model-viewer
         ref={modelViewerRef} // Assign ref
-        src="/ardog.glb" // Switched back to ardog.glb
-        ios-src="/ardog.usdz"
-        alt="A 3D model of a dog"
+        src={selectedModel ? `/models/${selectedModel.glb}` : "/models/ardog.glb"} // Corrected fallback path
+        ios-src={selectedModel ? `/models/${selectedModel.usdz}` : "/models/ardog.usdz"} // Corrected fallback path
+        alt={selectedModel ? `A 3D model of ${selectedModel.name}` : "A 3D model of a dog"}
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
@@ -163,12 +174,39 @@ function App() {
                 </button>
               </Drawer.Trigger>
               <StyledDrawerContent title="Choose Your Items">
-                <div className="flex flex-col items-center justify-center p-8 text-center">
-                  <h3 className="text-2xl font-semibold mb-4">Coming Soon</h3>
-                  <p className="text-gray-300">
-                    New items and customizations will be available shortly. Stay tuned!
-                  </p>
-                </div>
+                {models.length > 0
+                  ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
+                      {models.map((model) => (
+                        <button
+                          key={model.name}
+                          onClick={() => setSelectedModel(model)}
+                          className={`flex flex-col cursor-pointer items-center p-2 rounded-lg transition-all
+                                    ${
+                            selectedModel?.name === model.name
+                              ? "bg-blue-500/30 ring-2 ring-blue-500"
+                              : "bg-white/10 hover:bg-white/20"
+                          }`}
+                        >
+                          <img
+                            src={`/models/${model.thumbnail}`}
+                            alt={model.name}
+                            className="w-full h-full object-cover rounded-md"
+                            onError={(e) => (e.currentTarget.src = "/placeholder.png")} // Fallback image
+                          />
+                          <span className="text-xs text-center">{model.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )
+                  : (
+                    <div className="flex flex-col items-center justify-center p-8 text-center">
+                      <h3 className="text-2xl font-semibold mb-4">Loading Items...</h3>
+                      <p className="text-gray-300">
+                        Please wait while we fetch the available models.
+                      </p>
+                    </div>
+                  )}
               </StyledDrawerContent>
             </Drawer.Root>
 
