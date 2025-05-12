@@ -260,6 +260,13 @@ function App() {
                     >
                       <img src="/x-logo.svg" alt="X" className="w-6 h-6" />
                     </a>
+                    <a
+                      href="https://t.me/ARDOGCTO"
+                      target="_blank"
+                      className="cursor-pointer justify-center items-center flex w-[32px] aspect-square"
+                    >
+                      <img src="/telegram.svg" alt="Telegram" className="w-7.5 h-7.5" />
+                    </a>
                   </div>
                 </div>
               </StyledDrawerContent>
