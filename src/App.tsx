@@ -170,10 +170,10 @@ function App() {
               <Drawer.Trigger asChild>
                 <button className="w-1/2 py-3 px-4 shadow rounded-lg bg-[#ec8942] text-primary-foreground font-semibold flex items-center justify-center gap-2 cursor-pointer">
                   <ShoppingBag size={20} />
-                  Items
+                  Customize
                 </button>
               </Drawer.Trigger>
-              <StyledDrawerContent title="Choose Your Items">
+              <StyledDrawerContent title="Customize">
                 {models.length > 0
                   ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
