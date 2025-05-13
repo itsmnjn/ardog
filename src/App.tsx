@@ -6,7 +6,7 @@ import imageCompression from "browser-image-compression" // Import the compressi
 import { useRef, useState } from "react" // Import useRef, useState, and useEffect
 
 const MAX_WIDTH = "max-w-xl" // Configurable max width
-const DEFAULT_MODEL_URL = "/models/ardog_giantsign_banner.glb" // Default model URL
+const DEFAULT_MODEL_URL = "/models/ardog.glb" // Default model URL
 
 // New StyledDrawerContent component
 interface StyledDrawerContentProps {
