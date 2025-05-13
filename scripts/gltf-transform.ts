@@ -19,8 +19,8 @@ import path from "node:path"
 /*───────────────────────────────────────────────────────────────────────────*/
 
 const INPUT_GLB = path.resolve("./public/models/ardog_giantsign.glb")
-const INPUT_IMG = path.resolve("./public/chart.png") // png or jpg OK
-const OUTPUT_GLB = path.resolve("./scripts/ardog_giantsign_custom.glb")
+const INPUT_IMG = path.resolve("./public/banner.jpeg") // png or jpg OK
+const OUTPUT_GLB = path.resolve("./scripts/ardog_giantsign_banner.glb")
 const MAX_BYTES = 2_000_000 // 2 MiB cap
 
 /*───────────────────────────────────────────────────────────────────────────*/

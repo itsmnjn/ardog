@@ -1,5 +1,5 @@
 [
-  { "name": "Default", "glb": "ardog.glb", "usdz": "ardog.usdz", "thumbnail": "ardog.png" },
+  { "name": "Default", "glb": "ardog_giantsign_banner.glb", "usdz": "ardog.usdz", "thumbnail": "ardog.png" },
   {
     "name": "Glasses + Hat",
     "glb": "ardog_ticker_glasses_hat.glb",

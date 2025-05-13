@@ -1,19 +1,12 @@
-import { Check, Copy, Info, Rocket, ShoppingBag } from "lucide-react" // Add Copy and Check icons
+import { Check, Copy, Info, Rocket, ShoppingBag, Upload } from "lucide-react" // Add Upload icon
 import { Drawer } from "vaul"
 import "@google/model-viewer" // Import to register the custom element
 import { CONTRACT_ADDRESS, DEXSCREENER_LINK, X_COMMUNITY_LINK } from "@/lib/constants"
-import modelsData from "@/models.json" // Import models.json directly
+import imageCompression from "browser-image-compression" // Import the compression library
 import { useRef, useState } from "react" // Import useRef, useState, and useEffect
 
 const MAX_WIDTH = "max-w-xl" // Configurable max width
-
-// Define the type for our model data
-interface Model {
-  name: string
-  glb: string
-  usdz: string
-  thumbnail: string
-}
+const DEFAULT_MODEL_URL = "/models/ardog_giantsign_banner.glb" // Default model URL
 
 // New StyledDrawerContent component
 interface StyledDrawerContentProps {
@@ -42,9 +35,11 @@ const StyledDrawerContent: React.FC<StyledDrawerContentProps> = ({ title, childr
 
 function App() {
   const modelViewerRef = useRef<any>(null) // Add ref for model-viewer
+  const fileInputRef = useRef<HTMLInputElement>(null) // Add ref for file input
   const [copied, setCopied] = useState(false) // Add state for copy feedback
-  const [models] = useState<Model[]>(modelsData) // Initialize models state with imported data
-  const [selectedModel, setSelectedModel] = useState<Model | null>(modelsData.length > 0 ? modelsData[0] : null) // Initialize selectedModel
+  const [isProcessingImage, setIsProcessingImage] = useState(false) // State for processing status
+  const [selectedImage, setSelectedImage] = useState<File | null>(null) // State for selected image
+  const [customModelUrl, setCustomModelUrl] = useState<string | null>(null) // State for custom model URL
 
   const handleArActivate = () => {
     if (modelViewerRef.current) {
@@ -60,6 +55,57 @@ function App() {
     await navigator.clipboard.writeText(CONTRACT_ADDRESS)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleFileInputClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      setIsProcessingImage(true)
+      setSelectedImage(file)
+
+      console.log("Original file size:", file.size / 1024 / 1024, "MB")
+
+      // Compression options
+      const options = {
+        maxSizeMB: 2,
+        maxWidthOrHeight: 1024,
+        fileType: "image/jpeg",
+      }
+
+      const compressedFile = await imageCompression(file, options)
+      console.log("Compressed file size:", compressedFile.size / 1024 / 1024, "MB")
+
+      // Create FormData and append the compressed image
+      const formData = new FormData()
+      formData.append("image", compressedFile)
+
+      // Send the image to the /api/sign endpoint
+      const response = await fetch("/api/sign", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(`Server responded with ${response.status}: ${await response.text()}`)
+      }
+
+      const { glbUrl, success } = await response.json()
+      if (success && glbUrl) {
+        setCustomModelUrl(glbUrl)
+      }
+    } catch (error) {
+      console.error("Error processing image:", error)
+      alert("Failed to process image. Please try again.")
+      setCustomModelUrl(null)
+    } finally {
+      setIsProcessingImage(false)
+    }
   }
 
   return (
@@ -97,9 +143,8 @@ function App() {
       {/* model-viewer component - now takes full width and height */}
       <model-viewer
         ref={modelViewerRef} // Assign ref
-        src={selectedModel ? `/models/${selectedModel.glb}` : "/models/ardog.glb"} // Corrected fallback path
-        ios-src={selectedModel ? `/models/${selectedModel.usdz}` : "/models/ardog.usdz"} // Corrected fallback path
-        alt={selectedModel ? `A 3D model of ${selectedModel.name}` : "A 3D model of a dog"}
+        src={customModelUrl || DEFAULT_MODEL_URL}
+        alt="A 3D model of a custom sign or default dog"
         ar
         ar-modes="webxr scene-viewer quick-look"
         camera-controls
@@ -163,52 +208,26 @@ function App() {
             Launch in AR
           </button>
 
-          {/* Container for Items and More Info buttons */}
+          {/* Hidden file input */}
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          {/* Container for Custom Sign and Info buttons */}
           <div className="flex gap-2">
-            {/* Items Drawer */}
-            <Drawer.Root shouldScaleBackground>
-              <Drawer.Trigger asChild>
-                <button className="w-1/2 py-3 px-4 shadow rounded-lg bg-[#ec8942] text-primary-foreground font-semibold flex items-center justify-center gap-2 cursor-pointer">
-                  <ShoppingBag size={20} />
-                  Customize
-                </button>
-              </Drawer.Trigger>
-              <StyledDrawerContent title="Customize">
-                {models.length > 0
-                  ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4">
-                      {models.map((model) => (
-                        <button
-                          key={model.name}
-                          onClick={() => setSelectedModel(model)}
-                          className={`flex flex-col cursor-pointer items-center p-2 rounded-lg transition-all
-                                    ${
-                            selectedModel?.name === model.name
-                              ? "bg-blue-500/30 ring-2 ring-blue-500"
-                              : "bg-white/10 hover:bg-white/20"
-                          }`}
-                        >
-                          <img
-                            src={`/models/${model.thumbnail}`}
-                            alt={model.name}
-                            className="w-full h-full object-cover rounded-md"
-                            onError={(e) => (e.currentTarget.src = "/placeholder.png")} // Fallback image
-                          />
-                          <span className="text-xs text-center">{model.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )
-                  : (
-                    <div className="flex flex-col items-center justify-center p-8 text-center">
-                      <h3 className="text-2xl font-semibold mb-4">Loading Items...</h3>
-                      <p className="text-gray-300">
-                        Please wait while we fetch the available models.
-                      </p>
-                    </div>
-                  )}
-              </StyledDrawerContent>
-            </Drawer.Root>
+            {/* Custom Sign Button */}
+            <button
+              onClick={handleFileInputClick}
+              disabled={isProcessingImage}
+              className="w-1/2 py-3 px-4 shadow rounded-lg bg-purple-500 hover:bg-purple-600 disabled:bg-purple-400 text-white font-semibold flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
+            >
+              <Upload size={20} />
+              {isProcessingImage ? "Processing..." : "Custom Sign"}
+            </button>
 
             {/* More Info Drawer */}
             <Drawer.Root shouldScaleBackground>
